@@ -3,6 +3,7 @@
     #include <stdlib.h>
     #include <string.h>
     #include "STUDTYPE.h"
+    #include "cursorBased.h"
     #ifndef STACK_H
     #define STACK_H
     #define MAX 10
@@ -28,6 +29,7 @@
     typedef struct{
         stackArr* SA;
         stackList* SL;
+        VHeap vh;
     }Stack;
 
     void initStack(Stack **s){
@@ -279,5 +281,8 @@
             }
 
     }
+
+
+
 
     #endif  
