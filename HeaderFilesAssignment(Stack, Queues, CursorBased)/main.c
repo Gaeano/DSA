@@ -4,11 +4,13 @@
 #include "STACK.h"
 #include "QUEUE.h"
 #include "STUDTYPE.h"
-// #include "cursorBased.h"
+#include "cursorBased.h"
 
 int main (){
     Stack* S;
     Queue* Q;
+   
+
     StudPtr stud1 = (StudPtr) malloc (sizeof(Studtype));
     if (stud1 == NULL){
         printf("memory alloc failed");
@@ -65,7 +67,6 @@ int main (){
 
     initStack(&S);
     initQueue(&Q);
-
    
     ArrInitialize(S);
     ArrPush(S, stud1);
@@ -111,6 +112,18 @@ int main (){
     displayStack(S);
 
     displayQueue(Q);
+    initHeap(&S->vh);
+    List stak;
+    stak.stakList = -1;
+
+    
+
+    pushCursor(&S->vh, &stak.stakList, stud1);
+    pushCursor(&S->vh, &stak.stakList, stud2);
+    pushCursor(&S->vh, &stak.stakList, stud3);
+    pushCursor(&S->vh, &stak.stakList, stud4);
+    CBpushUnique(&S->vh, &stak.stakList, unique);
+    displayListS(&S->vh, stak.stakList);
 
 
     free(S->SA);
