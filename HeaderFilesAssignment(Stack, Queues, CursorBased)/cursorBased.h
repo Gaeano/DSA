@@ -321,7 +321,6 @@ void CBdequeueUnique(VHeap* vh, int *front, int* rear, StudPtr data) {
         while (!isCBQueueEmpty(tempList, tempRearList)) {
     StudPtr dataBack = frontCB(temp, tempList);
     enqueueCB(vh, &tempFront, &tempRear, dataBack);
-    printf("Re-enqueue: front=%d, rear=%d\n", tempFront, tempRear);
     dequeueCB(&temp, &tempList, &tempRearList);
 }
 
