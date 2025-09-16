@@ -1,286 +1,288 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include "STUDTYPE.h"
-#ifndef QUEUE_H
-#define QUEUE_H
-#define MAX 10
+    #include <stdio.h>
+    #include <stdbool.h>
+    #include <stdlib.h>
+    #include <string.h>
+    #include "STUDTYPE.h"
+    #include "cursorBased.h"
+    #ifndef STACK_H
+    #define STACK_H
+    #define MAX 10
 
 
-//array
-typedef struct {
-    StudPtr arr[MAX];
-    int rear;
-    int front;
-}ArrQueue;
 
-//linked list
-typedef struct node {
-    StudPtr data;
-    struct node *next;
-}node;
+    //array
+    typedef struct stack{
+        StudPtr arr[MAX];
+        int top;
+    }stackArr;
+    //linked list
+    typedef struct Node{
+        StudPtr data;
+        struct Node* next;
+    }Node;
 
-typedef struct {
-    node* rear;
-    node* front;
-}LLqueueList;
+    typedef struct stackList{
+        Node* head;
+        int size;
+    }stackList;
 
-typedef struct{
-    ArrQueue *AQ;
-    LLqueueList* LQ;
-}Queue;
+    typedef struct{
+        stackArr* SA;
+        stackList* SL;
+        VHeap vh;
+    }Stack;
 
-
-void initQueue(Queue** q){
-    *q = (Queue*) malloc (sizeof(Queue));
-    if(*q == NULL){
-        printf("memory alloc failed");
+    void initStack(Stack **s){
+        *s = (Stack*) malloc (sizeof(Stack));
+        if(*s == NULL){
+            printf("memory alloc failed");
+            exit(1);
         } else {
-        (*q)->AQ  = (ArrQueue*) malloc (sizeof(ArrQueue));
-        (*q)->LQ = (LLqueueList*) malloc (sizeof(LLqueueList));
-    }
-}
-
-
-//array
-void AqInitialize(Queue* q){
-    q->AQ->front = -1; //no elemenets in the queue
-    q->AQ->rear = -1;
-}
-
-bool AqIsEmpty(Queue * q){
-    return ((q->AQ->rear + 1) % MAX == q->AQ->front); //if true empty sha
-}
-
-bool AqIsFull(Queue * q){
-    return ((q->AQ->rear + 2) % MAX == q->AQ->front);
-}
-
-void AqEnqueue(Queue * q, StudPtr data){
-    
-    if (!AqIsFull(q)){
-        if(q->AQ->front == -1){ //queue is initially empty, assign the front with 0
-            q->AQ->front = 0; 
+            (*s)->SA = (stackArr*) malloc (sizeof(stackArr));
+            (*s)->SL = (stackList*) malloc (sizeof(stackList));
         }
-        q->AQ->rear = (q->AQ->rear + 1) % MAX;
-        q->AQ->arr[q->AQ->rear] = data;
-    }
-}
 
-void AqDequeue(Queue * q){
-    if (!AqIsEmpty(q)){
-        q->AQ->front = (q->AQ->front + 1) % MAX;
 
     }
-}
 
-StudPtr AqTop(Queue * q){
-    if (AqIsEmpty(q)){
-        printf("queue is empty");
-        exit(1);
-    } else {
-        return q->AQ->arr[q->AQ->front];
+    // array
+    void ArrInitialize(Stack* s){
+        s->SA->top = -1;
     }
+
+    bool ArrIsFull(Stack * s){
+        return s->SA->top == MAX - 1;
+    }
+
+    bool ArrIsEmpty(Stack * s){
+        return s->SA->top == -1;
+    }
+
+    void ArrPush(Stack * s, StudPtr data){
+        if(!ArrIsFull(s)){
+            s->SA->top++;
+            s->SA->arr[s->SA->top] = data;
+        }
+    }
+
+    void ArrPop(Stack * s){
+        if (!ArrIsEmpty(s)){
+            s->SA->top--;
+        }
+    }
+
+    StudPtr ArrTop (Stack * s){
+        if(!ArrIsEmpty(s)){
+            return s->SA->arr[s->SA->top];
+        } else {
+            printf("Stack is empty !");
+            exit(1);
+        }
+        //i will fix later 
+    }
+
+    void ArrPeek(Stack * s){
+        printf("Name: %s %s Course: %s Year Level: %d", s->SA->arr[s->SA->top]->name.FName, s->SA->arr[s->SA->top]->name.LName, s->SA->arr[s->SA->top]->Course, s->SA->arr[s->SA->top]->YrLvl);
+    }
+
+    //linked list
+    Node* createNewNode(StudPtr data){
+        Node* newNode = (Node*) malloc (sizeof(Node));
+        if (newNode == NULL){
+            printf("Memory alloc failed");
+            exit(1); //not wat ms wants ill fix this latur
+        } 
+            newNode->data = data;
+            newNode->next = NULL;
+            return newNode;
     
-}
-// linked list
-
-
-
-void LQueueInitialize(Queue * q){
-    q->LQ->rear = NULL;
-    q->LQ->front = NULL;
-}
-
-node* createNode(StudPtr data){
-    node * newNode = (node*) malloc (sizeof(node));
-    if (newNode == NULL){
-        printf("memory alloc failed");
     }
 
-    newNode->data = data;
-    newNode->next = NULL;
 
-    return newNode;
-
-}
-
-bool LQisEmpty(Queue * q){
-    return (q->LQ->front == NULL);
-}
-
-
-void LQEnqueue(Queue* q, StudPtr data){
-    node* newNode = createNode(data);
-
-    if(LQisEmpty(q)){
-        q->LQ->front = newNode;
-        q->LQ->rear = newNode;
-    } else {
-        q->LQ->rear->next = newNode;
-        q->LQ->rear= newNode;
+    void LlInitialize(Stack * s){
+        s->SL->head = NULL;
+        s->SL->size = 0;
     }
-}
 
-void LQDequeue(Queue * q){
-    if (LQisEmpty(q)){
-        printf("nothing to dequeueuu");
-        exit(1);
-    } else {
-        node* temp;
-
-        temp = q->LQ->front;
-
-        q->LQ->front = temp->next;
-        
+    bool LLisFull(Stack * s){
+        return s->SL->size == MAX;
     }
-}
 
+    bool LLisEmpty(Stack * s){
+        return s->SL->size == 0;
+    }
 
-StudPtr front(Queue* q){
-    if(!LQisEmpty(q)){
-        return q->LQ->front->data;
-    } else {
-        printf("empty man sha bro bro");
+    void LLpush(Stack * s, StudPtr data){
+        if(!LLisFull(s)){
+            // s->top++; //change
+            Node* newNode = createNewNode(data);
+            Node* head = s->SL->head;
+
+            if (s->SL->head == NULL){
+                s->SL->head = newNode;
+                s->SL->size++;
+            } else {
+                newNode->next = s->SL->head;
+                s->SL->head = newNode;
+                s->SL->size++;;
+            }
+        }
+    }
+
+    void LLpop(Stack * s){
+        if (!LLisEmpty(s)){
+            Node* temp = s->SL->head;
+            s->SL->head = s->SL->head->next;
+        s->SL->size--;
+        }
+    }
+
+    StudPtr LLtop (Stack * s){
+        if(!LLisEmpty(s)){
+            return s->SL->head->data;
+        }
         exit(1);
     }
-}
 
-bool checkUniqueArrayQ(Queue* q, StudPtr data){
-    StudPtr ArrQueue = AqTop(q);
-    return strcmp(ArrQueue->name.LName, data->name.LName) != 0;
- 
-    //HEEBHHDBW
-}
-
-bool checkUniqueLLQ(Queue* q,StudPtr data){
-    StudPtr LLQueueTop = front(q);
-    return strcmp(LLQueueTop->name.LName, data->name.LName) != 0;
-    //HAHDAWHABDA
-}
-
-
-
-void enqueueUnique  (Queue* q, StudPtr data){
-    Queue temp, temp2;
-
-    ArrQueue tempArr =(*q->AQ);
-    temp.LQ = NULL;
-    LLqueueList tempListQ = (*q->LQ);
-    temp2.AQ = NULL;
-
-    for (temp.AQ = &tempArr; !AqIsEmpty(&temp) && checkUniqueArrayQ(&temp, data); AqDequeue(&temp)){}
-
-    if(AqIsEmpty(&temp)){
-        AqEnqueue(q, data);
-    } else {
-        printf("%s data is not unique, could not add to Array queue\n", data->name.LName);
+    void LLpeek(Stack * s){
+        printf("Top: %s %s Course: %s YrLvl: %d", s->SL->head->data->name.FName, s->SL->head->data->name.LName, s->SL->head->data->Course, s->SL->head->data->YrLvl);
     }
 
 
-    for (temp2.LQ = &tempListQ; !LQisEmpty(&temp2) && checkUniqueLLQ(&temp2, data); LQDequeue(&temp2)){}
-
-
-    if(LQisEmpty(&temp2)){
-        LQEnqueue(q, data);
-    } else {
-        printf("%s data is not unique, could not add to Linked List queue\n", data->name.LName);
+    bool checkUniqueArrayS(Stack* s, StudPtr data){
+        StudPtr topArr = ArrTop(s);
+        return strcmp(topArr->name.LName, data->name.LName) != 0;
     }
 
-}
+    bool checkUniqueLLS(Stack* s, StudPtr data){
+        StudPtr topList = LLtop(s);
+        return strcmp(topList->name.LName, data->name.LName) != 0;
+    }
 
-void displayQueue(Queue * Q){
-     Queue temp, temp2;
-        temp = (*Q);
-        temp2 = (*Q);
-        ArrQueue tempArr = (*Q->AQ);
-        LLqueueList tempList = (*Q->LQ);
-        temp.LQ = NULL;
-        temp2.AQ = NULL;
-        temp.AQ = &tempArr;
-        temp2.LQ = &tempList;
 
-        printf("ARRAY QUEUE\n");
-            while(!AqIsEmpty(&temp)){
-                StudPtr data = AqTop(&temp);
+    void pushUnique(Stack* s, StudPtr data){
+            
+            Stack temp, temp2;
+            stackList tempList = (*s->SL);
+            stackArr tempArr = (*s->SA);
+            temp.SL = NULL; //for the array
+            temp2.SA = NULL; //for the linked list
+            for (temp.SA = &tempArr; !ArrIsEmpty(&temp) && checkUniqueArrayS(&temp, data) ; ArrPop(&temp)){}
+            
+            if(ArrIsEmpty(&temp)){
+                ArrPush(s, data);
+            } else {
+                printf("%s data is not unique, could not add to Array Stack\n", data->name.LName);
+            }
+
+
+            for(temp2.SL = &tempList; !LLisEmpty(&temp2) && checkUniqueLLS(&temp2, data); LLpop(&temp2)){}
+
+            if(LLisEmpty(&temp2)){
+                LLpush(s, data);
+            } else {
+                printf("%s data is not unique, could not add to Linked List Stack\n", data->name.LName);
+            }
+            
+    }   
+
+
+    void displayStack(Stack * S){
+        Stack temp, temp2;
+        temp = (*S);
+        temp2 = (*S);
+        stackArr tempArr = (*S->SA);
+        stackList tempList = (*S->SL);
+        temp.SL = NULL;
+        temp2.SA = NULL;
+        temp.SA = &tempArr;
+        temp2.SL = &tempList;
+        printf("%-15s %-15s %-10s %-5s\n", "First Name", "Last Name", "Course", "Yr");
+        printf("-------------------------------------------------------\n");
+        printf("ARRAY STACK\n");
+            while(!ArrIsEmpty(&temp)){
+                StudPtr data = ArrTop(&temp);
                 printf("%-15s %-15s %-10s %-5d\n",
                     data->name.FName,
                     data->name.LName,
                     data->Course,
                     data->YrLvl);
-                AqDequeue(&temp);
+                ArrPop(&temp);
             }
             printf("-------------------------------\n");
 
             
-        printf("Linked List QUEUE\n");
-        for (node* cur = temp2.LQ->front; cur != NULL; cur = cur->next){
+        printf("Linked List STACK\n");
+        for (Node* cur = temp2.SL->head; cur != NULL; cur = cur->next){
             printf("%-15s %-15s %-10s %-5d\n",
-                    cur->data->name.FName,
-                    cur->data->name.LName,
-                    cur->data->Course,
-                    cur->data->YrLvl);
+                cur->data->name.FName,
+                cur->data->name.LName,
+                cur->data->Course,
+                cur->data->YrLvl);
         }
 
             printf("-------------------------------\n");
-}
+    }
 
 
-void dequeueUnique(Queue* q, StudPtr data){
-    Queue* temp = (Queue*) malloc (sizeof(Queue));
+    void popUnique(Stack *s, StudPtr data){
+            Stack* temp = (Stack*) malloc (sizeof(Stack));
             if(temp == NULL){
                 printf("memory alloc failed");
                 exit(1);
             }
-            temp->AQ = (ArrQueue*) malloc (sizeof(ArrQueue));
-            AqInitialize(temp);
+            temp->SA = (stackArr*) malloc (sizeof(stackArr));
+            ArrInitialize(temp);
 
-            while(!AqIsEmpty(q) && checkUniqueArrayQ(q, data)){
-                StudPtr tempData = AqTop(q);
-                AqEnqueue(temp, tempData);
-                AqDequeue(q);
+            while(!ArrIsEmpty(s) && checkUniqueArrayS(s, data)){
+                StudPtr tempData = ArrTop(s);
+                ArrPush(temp, tempData);
+                ArrPop(s);
             }
 
-            if(!AqIsEmpty(q)){ //if its not empty, data is found u pop the data
-                AqDequeue(q);
-                while( !AqIsEmpty(temp)){
-                    StudPtr giveMeBackMyData = AqTop(temp);
-                    AqEnqueue(q, giveMeBackMyData);
-                    AqDequeue(temp);
+            if(!ArrIsEmpty(s)){ //if its not empty, data is found u pop the data
+                ArrPop(s);
+                while( !ArrIsEmpty(temp)){
+                    StudPtr giveMeBackMyData = ArrTop(temp);
+                    ArrPush(s, giveMeBackMyData);
+                    ArrPop(temp);
                 }
-                printf("data %s successfully popped in Array Queue\n", data->name.LName);
+                printf("data %s successfully popped in Array Stack\n", data->name.LName);
             } else { //data is not found
-                printf("data does not exist in the Array Queue\n");
+                printf("data does not exist in the Array Stack\n");
             }
         //linked list
 
-            Queue *temp2 = (Queue*) malloc (sizeof(Queue));
+            Stack *temp2 = (Stack*) malloc (sizeof(Stack));
             if(temp2 == NULL){
                 printf("memory alloc failed");
                 exit(1);
             }
-            temp2->LQ = (LLqueueList*) malloc (sizeof(LLqueueList));
-            LQueueInitialize(temp2);
-            while(!LQisEmpty(q)&& checkUniqueLLQ(q, data)){
-                StudPtr holdMyData = front(q);
-                LQEnqueue(temp2, holdMyData);
-                LQDequeue(q);
+            temp2->SL = (stackList*) malloc (sizeof(stackList));
+            LlInitialize(temp2);
+            while(!LLisEmpty(s)&& checkUniqueLLS(s, data)){
+                StudPtr holdMyData = LLtop(s);
+                LLpush(temp2, holdMyData);
+                LLpop(s);
             }
 
-            if(!LQisEmpty(q)){
-                LQDequeue(q);
+            if(!LLisEmpty(s)){
+                LLpop(s);
 
-                while(!LQisEmpty(temp2)){
-                    StudPtr canIHaveMyDataBack = front(temp2);
-                    LQEnqueue(q, canIHaveMyDataBack);
-                    LQDequeue(temp2);
+                while(!LLisEmpty(temp2)){
+                    StudPtr canIHaveMyDataBack = LLtop(temp2);
+                    LLpush(s, canIHaveMyDataBack);
+                    LLpop(temp2);
                 }
             
-                printf("data %s successfully popped in Linked List Queue\n\n", data->name.LName);
+                printf("data %s successfully popped in Linked List Stack\n\n", data->name.LName);
             } else {
-                printf("data does not exist in the Linked Queue\n");
+                printf("data does not exist in the Linked Stack\n");
             }
-}
 
-#endif
+    }
+
+
+
+
+    #endif  
