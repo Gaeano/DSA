@@ -9,7 +9,7 @@
 int main (){
     Stack* S;
     Queue* Q;
-   
+    
 
     StudPtr stud1 = (StudPtr) malloc (sizeof(Studtype));
     if (stud1 == NULL){
@@ -112,10 +112,12 @@ int main (){
     displayStack(S);
 
     displayQueue(Q);
+    
+
+    //cursorbased
     initHeap(&S->vh);
     List stak;
-    stak.stakList = -1;
-
+    CBinitStack(&stak);
     
 
     pushCursor(&S->vh, &stak.stakList, stud1);
@@ -123,8 +125,38 @@ int main (){
     pushCursor(&S->vh, &stak.stakList, stud3);
     pushCursor(&S->vh, &stak.stakList, stud4);
     CBpushUnique(&S->vh, &stak.stakList, unique);
+
     displayListS(&S->vh, stak.stakList);
 
+    popUniqueCB(&S->vh, unique, &stak.stakList);
+    displayListS(&S->vh, stak.stakList);
+
+    initHeap(&Q->vh);
+    List queue;
+    CBinitQueue(&queue);
+    printf("\n");
+
+    printf("Cursor Based QUEUE\n");
+    enqueueCB(&S->vh, &queue.queueListFront, &queue.queueListRear, stud1);
+    enqueueCB(&S->vh, &queue.queueListFront, &queue.queueListRear, stud2);
+    enqueueCB(&S->vh, &queue.queueListFront, &queue.queueListRear, stud3);
+    enqueueCB(&S->vh, &queue.queueListFront, &queue.queueListRear, stud4);
+    displayQ(&S->vh, queue.queueListFront);
+
+    CBenqueueUnique(&S->vh, &queue.queueListFront, &queue.queueListRear, unique);
+    printf("\n");
+
+    displayQ(&S->vh, queue.queueListFront);
+
+    // CBdequeueUnique(&S->vh, &queue.queueListFront, &queue.queueListRear, unique);
+
+printf("Before CBdequeueUnique: front=%d, rear=%d\n", queue.queueListFront, queue.queueListRear);
+CBdequeueUnique(&S->vh, &queue.queueListFront, &queue.queueListRear, unique);
+printf("After CBdequeueUnique: front=%d, rear=%d\n", queue.queueListFront, queue.queueListRear);
+
+
+
+    displayQ(&Q->vh, queue.queueListFront);
 
     free(S->SA);
     free(S->SL);
