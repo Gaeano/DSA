@@ -137,22 +137,22 @@ int main (){
     printf("\n");
 
     printf("Cursor Based QUEUE\n");
-    enqueueCB(&S->vh, &queue.queueListFront, &queue.queueListRear, stud1);
-    enqueueCB(&S->vh, &queue.queueListFront, &queue.queueListRear, stud2);
-    enqueueCB(&S->vh, &queue.queueListFront, &queue.queueListRear, stud3);
-    enqueueCB(&S->vh, &queue.queueListFront, &queue.queueListRear, stud4);
-    displayQ(&S->vh, queue.queueListFront);
+    enqueueCB(&Q->vh, &queue.queueListFront, &queue.queueListRear, stud1);
+    enqueueCB(&Q->vh, &queue.queueListFront, &queue.queueListRear, stud2);
+    enqueueCB(&Q->vh, &queue.queueListFront, &queue.queueListRear, stud3);
+    enqueueCB(&Q->vh, &queue.queueListFront, &queue.queueListRear, stud4);
+    displayQ(&Q->vh, queue.queueListFront);
 
-    CBenqueueUnique(&S->vh, &queue.queueListFront, &queue.queueListRear, unique);
+    CBenqueueUnique(&Q->vh, &queue.queueListFront, &queue.queueListRear, unique);
     printf("\n");
 
-    displayQ(&S->vh, queue.queueListFront);
+    displayQ(&Q->vh, queue.queueListFront);
 
-    // CBdequeueUnique(&S->vh, &queue.queueListFront, &queue.queueListRear, unique);
+    CBdequeueUnique(&Q->vh, &queue.queueListFront, &queue.queueListRear, unique);
 
-printf("Before CBdequeueUnique: front=%d, rear=%d\n", queue.queueListFront, queue.queueListRear);
-CBdequeueUnique(&S->vh, &queue.queueListFront, &queue.queueListRear, unique);
-printf("After CBdequeueUnique: front=%d, rear=%d\n", queue.queueListFront, queue.queueListRear);
+// printf("Before CBdequeueUnique: front=%d, rear=%d\n", queue.queueListFront, queue.queueListRear);
+// CBdequeueUnique(&S->vh, &queue.queueListFront, &queue.queueListRear, unique);
+// printf("After CBdequeueUnique: front=%d, rear=%d\n", queue.queueListFront, queue.queueListRear);
 
 
 
