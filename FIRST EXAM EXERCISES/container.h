@@ -4,7 +4,7 @@
 
 typedef struct{
     char containerName[20];
-    int ID:
-}Container;
+    int ID;
+ } Container,* containerPtr;
 
 #endif

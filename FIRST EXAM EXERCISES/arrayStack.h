@@ -2,9 +2,10 @@
 #define arrayStacl_H
 #include <stdio.h>
 #include <stdbool.h>
+#include "container.h"
 #define MAX 5
 typedef struct{
-    int container[MAX];
+    containerPtr container[MAX];
     int top;
 }Stack;
 
@@ -21,7 +22,7 @@ bool isEmpty(Stack* s){
     return s->top == -1;
 }
 
-void push (Stack* s, int value){
+void push (Stack* s, containerPtr value){
     if(!isFull(s)){
         s->top++;
         s->container[s->top] = value;
@@ -29,7 +30,7 @@ void push (Stack* s, int value){
 }
 
 int peek(Stack* s){
-    return s->container[s->top];
+    return s->container[s->top]->ID;
 }
 
 int pop(Stack* s){
@@ -44,8 +45,9 @@ int pop(Stack* s){
 void display(Stack *s){
     Stack temp;
 
+    
     for (temp = *s; !isEmpty(&temp); pop(&temp)){
-        printf("Container: %d\n", temp.container[temp.top]);
+        printf("ContainerID: %d ContainerName = %s\n", temp.container[temp.top]->ID, temp.container[temp.top]->containerName);
     }
 }
 
