@@ -59,10 +59,10 @@ void findContainer(Stack* s, int find){
         i++;
     }
 
-    if (i == MAXSTAk - 1){
+    if (flag == 0){
         printf("container not found huhu\n");
     } else {
-        printf("container id %d exists in stack: %d\n",find, i);
+        printf("container id %d exists in stack: %d\n",data->ID, i);
     }
 }
 
