@@ -26,7 +26,7 @@ void removeContainer(Stack* s){
     data->ID = peek(&s[i]);
     pop(&s[i]);
 
-    printf("Container with data %d successfully removed from stack: %d\n", data->ID, i+1);
+    printf("Container with ID: %d successfully removed from stack: %d\n", data->ID, i+1);
 
 }
 
