@@ -23,7 +23,7 @@ void initDictionary (Node** dic);
 void insert(Node** dictio, Color insertCol);
 Node* createNewNode(Color color);
 void delete(Node** dictio, Color color);
-void search(Node** dictio, int val);
+void search(Node** dictio, Color color);
 int hash(Color color);
 bool isEqual(Node* dictio, Color color);
 
@@ -98,21 +98,41 @@ void delete(Node** dictio, Color color){
     
 }
 
+void search(Node** dictio, Color color){
+    int index = hash(color); //get the index of the color to del
+    if (dictio[index] == NULL){
+        printf("Color %s not found\n", color.colorName);
+    } else {
+        if (isEqual(dictio[index], color)){
+        printf("Color if found at index %d, with colorName %s and RGBValue {%d %d %d}", index, color.colorName, color.RGBval[0], color.RGBval[1], color.RGBval[2]); //at head of list
+        } else {
+            Node* temp;
+            Node* prev = NULL;
+            for (temp = dictio[index]; temp != NULL && !isEqual(temp, color); temp = temp->next){
+                prev = temp;
+            } //traverse until it finds a match
+            printf("Color if found at index %d, with colorName %s and RGBValue {%d %d %d}", index, color.colorName, color.RGBval[0], color.RGBval[1], color.RGBval[2]);
+        }
+    }
+}
+
 int main (){
     Node* dictionary[MAX_SIZE]; 
     initDictionary(dictionary);
-    Color color[5] = {{"red", {0,4,7}}, 
+    Color color[5] ={{"red", {0,4,7}}, 
                     {"blue", {4, 8 ,10}},
-                {"gaea", {0,0,0}}};   
+                    {"gaea", {0,0,0}},
+                    {"toni", {10, 15, 05}},
+                    {"tonet", {06,14,24}}};   
 
     int i;
-    for (i = 0; i < 3; i++){
+    for (i = 0; i < 5; i++){
         insert(dictionary, color[i]);
     }
     Color chain = {"chain", {0,4,7}};
     insert(dictionary, chain);
     Color del = {"red", {0,4,7}};
-
+    
     delete(dictionary, del);
 
     for (i = 0 ; i < MAX_SIZE; i++){ //display
@@ -126,6 +146,8 @@ int main (){
             printf("NULL\n");
         }
     }
+
+    search(dictionary, color[3]);
     
 }
 

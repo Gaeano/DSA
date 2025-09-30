@@ -11,6 +11,7 @@ typedef struct{
 Set un(Set A, Set B);
 Set inter(Set A, Set B);
 Set diff(Set A, Set B);
+Set merge(Set A, Set B);
 void addElem(Set* A, int elem);
 int setContains(Set* A, int x);
 
@@ -69,6 +70,9 @@ Set diff(Set A, Set B){
     return C;
 }
 
+Set merge(Set A, Set B){
+    return un(A, B);
+}
 
 
 
@@ -112,6 +116,11 @@ int main (){
     printf("Set C difference\n");
     C = diff(A, B);
     printSet(C);
+
+    printf("Set C merge\n");
+    C = merge(A, B);
+    printSet(C);
+    
     free(C.data);
 
     free(A.data);
