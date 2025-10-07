@@ -1,4 +1,4 @@
-## this assignment is where the sets are all initialized to 0. Making the function for adding a value only initialize it to 1 to its specific position
+## This  assignment is where the sets are all initialized to 0. Making its function for adding a value only initialize it to 1 to its specific position
 ### to add a value to a set not initialized to 0
 
 ```C
