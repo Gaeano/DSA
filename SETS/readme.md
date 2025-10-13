@@ -5,10 +5,9 @@
 #define BITS (sizeof(char) * 8)
 void setAnswer(Set* profile, int index, int value){
     if (value == 1){
-    profile->answers[index / BITS] |= (1 << (index % BITS); // assign to one
+    profile->answers[index / BITS] |= (1 << (index % BITS)); // assign to one
     } else {
     profile->answers[index/BITS] &= ~( 1 << (index & BITS));
     }
   }
-}
 ```
