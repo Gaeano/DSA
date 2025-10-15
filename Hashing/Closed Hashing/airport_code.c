@@ -98,7 +98,7 @@ void displaySet(VHeap *dictionary){
         printf("\n");
     }
 
-
+    printf("AVAIL: %d\n", dictionary->avail);
 
 }
 
