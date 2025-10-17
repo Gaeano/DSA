@@ -45,11 +45,11 @@ void Downheapify(PriorityQueue* pq, int index){//used for delete
     int rightChild  = (2*index + 2);
     int smallest = index;
 
-    if (pq->queue[smallest] > leftChild){ //find the smallest between the parent and hte left
+    if (leftChild  < pq->count && pq->queue[smallest] > leftChild){ //find the smallest between the parent and hte left
         smallest = leftChild; // parent is greater than child, make smallest the leftchild
     }
 
-    if (pq->queue[smallest] > rightChild){ //compare leftchild and rightchild
+    if (rightChild < pq->count && pq->queue[smallest] > rightChild){ //compare leftchild and rightchild
         smallest = rightChild; //if leftchild is bigger than rightchild, make smallest rightchild
     }
 

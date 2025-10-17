@@ -1,1 +1,2 @@
 practice1 contains deleteMin, upHeapify for insertion, downHeapify for deletion
+practice2 contains heapSort implementation
