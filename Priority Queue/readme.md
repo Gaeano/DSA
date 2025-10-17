@@ -1,1 +1,1 @@
-practice1 contains deleteMin, upHeapify for insertion, downHeapify for deletion
+- practice1 contains deleteMin, upHeapify for insertion, downHeapify for deletion
