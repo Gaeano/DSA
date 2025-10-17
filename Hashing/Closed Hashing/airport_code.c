@@ -66,14 +66,19 @@ void insertCode(VHeap* dictionary, char* code){
   
     if (strcmp(dictionary->H[hashCode].code, "") == 0){ //empty
         strcpy(dictionary->H[hashCode].code, code); //put code in the elem
-        printf("Inserted %s to primary storage\n", code);
+        printf("Inserted %s to primary storage with hash(%s) -> %d\n", code, code, hashCode);
     } else { //if elem is already occupied
         int newIndex = allocSpace(dictionary); 
         if (newIndex != -1){
-            dictionary->H[hashCode].next = newIndex;
+            trav = &dictionary->H[hashCode].next;
+            while (*trav != -1){
+                trav = &dictionary->H[*trav].next;
+            }
+
+            *trav = newIndex;
             strcpy(dictionary->H[newIndex].code, code);
             dictionary->H[newIndex].next = -1;
-            printf("Inserted %s to secondary storage\n", code);
+            printf("Inserted %s to secondary storage with hash(%s) -> %d\n", code, code, hashCode);
         }
         
     }
@@ -93,7 +98,7 @@ void displaySet(VHeap *dictionary){
         printf("\n");
     }
 
-
+    printf("AVAIL: %d\n", dictionary->avail);
 
 }
 
@@ -112,7 +117,7 @@ int main (){
 
    
     int i;
-    for (i = 0; i < numCodes; i++){
+    for (i = 0; i < 12; i++){
         insertCode(dictionary, codes[i]);
     }
     displaySet(dictionary);
