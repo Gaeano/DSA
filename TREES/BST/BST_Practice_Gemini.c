@@ -99,7 +99,7 @@ void inorder(BST* B) {
 
 // Problem 1: Count Leaf Nodes
 // Returns the number of nodes that have NO children.
-int countLeaves(BST* B) { 
+int countLeavesIte(BST* B) { 
     // TODO: Write your logic here
     int count = 0;
     BST* trav, *trav2, *holder;
@@ -162,10 +162,47 @@ int countLeaves(BST* B) {
     return count; // Placeholder
 }
 
+
+int countLeavesRec(BST* B) { 
+    // TODO: Write your logic here
+    
+
+    if (B == NULL){
+        return 0;
+    }
+
+    if (B->LC == NULL && B->RC == NULL){
+        return 1;
+    } 
+
+   int leftCount = countLeavesRec(B->LC);
+   int rightCount = countLeavesRec(B->RC);
+
+    return (leftCount + rightCount);
+    
+    
+}
+
+int getHeightRec(BST* B){
+    if (B == NULL){
+        return -1;
+    }
+
+
+    int leftCount = getHeightRec(B->LC);
+    int rightCount = getHeightRec(B->RC);
+
+    if (leftCount > rightCount){
+        return leftCount + 1;
+    } else {
+        return rightCount + 1;
+    }
+}
+
 // Problem 2: Find Tree Height (Edges)
 // Returns the number of edges on the longest path from root to leaf.
 // Empty tree = -1, Root only = 0.
-int getHeight(BST* B) {
+int getHeightIte(BST* B) {
     // TODO: Write your logic here
     int maximumHeight = 0;
     int count = 0;
@@ -351,13 +388,13 @@ int main() {
 
     // 2. Test Count Leaves
     printf("--- Test 1: Count Leaves ---\n");
-    int leaves = countLeaves(myTree);
+    int leaves = countLeavesRec(myTree);
     printf("Your Answer: %d\n", leaves);
     printf("Expected:    4\n"); 
 
     // 3. Test Height
     printf("\n--- Test 2: Tree Height ---\n");
-    int height = getHeight(myTree);
+    int height = getHeightRec(myTree);
     printf("Your Answer: %d\n", height);
     printf("Expected:    2\n"); 
 
