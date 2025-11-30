@@ -2,12 +2,51 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define MAX 10
+
 // --- STRUCTURE DEFINITION ---
 typedef struct node{
     int elem;
     struct node* LC;
     struct node* RC;
 } BST;
+
+
+typedef struct{
+    BST* node[MAX];
+    int top;
+}Stack;
+
+void initialize(Stack * s){
+    s->top = 0;
+}
+
+bool isEmpty(Stack s){
+    return (s.top == 0);
+}
+
+BST* pop(Stack* s){
+    if (!isEmpty(*s)){
+        BST* data = s->node[s->top-1];
+        s->top--;
+        return data;
+    }
+    
+}
+
+void push(Stack * s, BST* data){
+    if (s->top < MAX){
+        s->node[s->top] = data;
+        s->top++;
+
+    }
+}
+
+BST* peek (Stack * s){
+    return s->node[s->top-1];
+}
+
+
 
 // --- HELPER FUNCTIONS (ALREADY WRITTEN FOR YOU) ---
 
@@ -28,12 +67,32 @@ void insert(BST** B, int data) {
 }
 
 // 2. Display Function
+// void inorder(BST* B) {
+//     if (B != NULL) {
+//         inorder(B->LC);
+//         printf("%d ", B->elem);
+//         inorder(B->RC);
+//     }
+// }
+
 void inorder(BST* B) {
-    if (B != NULL) {
-        inorder(B->LC);
-        printf("%d ", B->elem);
-        inorder(B->RC);
+    Stack s;
+    BST* temp = B;
+    initialize(&s);
+
+    while (temp != NULL || !isEmpty(s)){
+        while (temp != NULL){
+            push(&s, temp);
+            temp = temp->LC;
+        }
+
+     
+        temp = pop(&s);  
+        printf("%d", temp->elem);
+        temp = temp->RC;
     }
+
+
 }
 
 // --- YOUR PRACTICE FUNCTIONS (FILL THESE IN) ---
@@ -276,6 +335,9 @@ void destroyTree(BST** B) {
 
 int main() {
     BST* myTree = NULL;
+    Stack s;
+
+    initialize(&s);
 
     // 1. Build the Tree
     int values[] = {50, 30, 70, 20, 40, 60, 80};
