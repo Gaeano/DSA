@@ -17,6 +17,44 @@ typedef struct{
     int top;
 }Stack;
 
+typedef struct{
+    BST* node[MAX];
+    int front;
+    int rear;
+}Queue;
+
+
+void initializeQ(Queue* q){
+    q->front = 0;
+    q->rear = -1;
+}
+
+int isFullQ(Queue q){
+    return ((q.rear + 2) % MAX) == q.front;
+}
+
+int isEmptyQ(Queue q){
+    return ((q.rear + 1) % MAX) == q.front;
+}
+
+void enqueue(Queue* q , BST* data){
+    if (!isFullQ(*q)){
+        q->rear = (q->rear + 1) % MAX;
+        q->node[q->rear] = data;
+    }
+}
+
+BST* dequeue(Queue* q){
+    BST* toReturn;
+    if (!isEmptyQ(*q)){
+        toReturn = q->node[q->front];
+        q->front = (q->front + 1) % MAX;
+    }
+
+    return toReturn;
+
+
+}
 void initialize(Stack * s){
     s->top = 0;
 }
@@ -88,12 +126,13 @@ void inorder(BST* B) {
 
      
         temp = pop(&s);  
-        printf("%d", temp->elem);
+        printf("%d ", temp->elem);
         temp = temp->RC;
     }
 
 
 }
+
 
 // --- YOUR PRACTICE FUNCTIONS (FILL THESE IN) ---
 
@@ -102,61 +141,27 @@ void inorder(BST* B) {
 int countLeavesIte(BST* B) { 
     // TODO: Write your logic here
     int count = 0;
-    BST* trav, *trav2, *holder;
-    //for the left subtree
-    for (trav = B->LC; trav != NULL; trav = trav->LC){ 
-
-        for(trav2 = trav->RC; trav2 != NULL;){
-            if (trav2->RC != NULL && trav2->LC != NULL){
-                trav2 = trav2->RC;
-                holder = trav2->LC;
-            } else if (trav2->LC != NULL && trav2->RC == NULL){
-                trav2 = trav2->LC;
-            } else if (trav2->LC != NULL && trav2->LC == NULL){
-                trav2 = trav2->RC;
-            }
-
-            if (trav2->LC == NULL && trav2->RC == NULL){ //if a node has no children (its a leaf)
-                count++;
-                holder = NULL;
-            }
-            trav2 = holder;
-        }
-
-        if (trav->LC == NULL && trav->RC == NULL){ //if a node has no children (its a leaf)
-                count++;
-        }
-
-        free(holder);
-        
-    }
     
-    //for the right subtree
-    for (trav = B->RC; trav != NULL; trav = trav->RC){ 
+    Stack s;
+    initialize(&s);
 
-        for(trav2 = trav->LC; trav2 != NULL;){
-            if (trav2->RC != NULL && trav2->LC != NULL){
-                trav2 = trav2->RC;
-                holder = trav2->LC;
-            } else if (trav2->LC != NULL && trav2->RC == NULL){
-                trav2 = trav2->LC;
-            } else if (trav2->RC != NULL && trav2->LC == NULL) {
-                trav2 = trav2->RC;
-            }
+    push(&s, B);
 
-            if (trav2->LC == NULL && trav2->RC == NULL){ //if a node has no children (its a leaf)
-                count++;
-                holder = NULL;
-            }
-            trav2 = holder;
-        }
-
-        if (trav->LC == NULL && trav->RC == NULL){ //if a node has no children (its a leaf)
+    while (!isEmpty(s)){
+        BST* current = pop(&s);
+        if (current->LC == NULL && current->RC == NULL){
             count++;
+            break;
         }
 
-        free(holder);
-        
+        if (current->RC != NULL){
+            push(&s, current->RC);
+        }
+
+        if (current->LC != NULL){
+            push(&s, current->LC);
+        }
+
     }
 
     return count; // Placeholder
@@ -204,66 +209,26 @@ int getHeightRec(BST* B){
 // Empty tree = -1, Root only = 0.
 int getHeightIte(BST* B) {
     // TODO: Write your logic here
-    int maximumHeight = 0;
-    int count = 0;
+     int maximumHeight = 0;
+    Queue q;
+    initializeQ(&q);
 
-    BST* trav, *trav2, *holder;
-    //for the left subtree
-    for (trav = B->LC; trav != NULL; trav = trav->LC){ 
-        count++;
-        for(trav2 = trav->RC; trav2 != NULL;){
-            count++;
-            holder = NULL;
-            if (trav2->RC != NULL && trav2->LC != NULL){
-                trav2 = trav2->RC;
-                holder = trav2->LC;
-            } else if (trav2->LC != NULL && trav2->RC == NULL){
-                trav2 = trav2->LC;
-            } else if (trav2->LC != NULL && trav2->LC == NULL){
-                trav2 = trav2->RC;
-            }
+    enqueue(&q, B);
 
-            trav2 = holder;
-        }
-
-
-        if (count > maximumHeight){
-            maximumHeight = count;
-        }
-        count = 1; //reset to 1, since the root is automatically counted
-
-        free(holder);
+    while (!isEmptyQ(q)){
+        BST* current = dequeue(&q);
+        maximumHeight++;
         
-    }
-    count = 0;
-    //for the right subtree
-    for (trav = B->RC; trav != NULL; trav = trav->RC){ 
-        count++;
-        for(trav2 = trav->LC; trav2 != NULL;){
-            count++;
-            holder = NULL;
-            if (trav2->RC != NULL && trav2->LC != NULL){
-                trav2 = trav2->RC;
-                holder = trav2->LC;
-            } else if (trav2->LC != NULL && trav2->RC == NULL){
-                trav2 = trav2->LC;
-            } else if (trav2->RC != NULL && trav2->LC == NULL) {
-                trav2 = trav2->RC;
-            }
-            trav2 = holder;
-        }
-
-         if (count > maximumHeight){
-            maximumHeight = count;
+        if (current->LC != NULL){
+            enqueue(&q, current->LC);
         }
         
-        count = 1; //reset to 1, since the root is automatically counted
-
-        free(holder);
+        if (current->RC != NULL){
+            enqueue(&q, current->RC);
+        }
         
     }
 
-    
     return maximumHeight; // Placeholder
 }
 
@@ -272,46 +237,25 @@ int getHeightIte(BST* B) {
 // Assume n1 and n2 exist in the tree.
 BST* findLCA(BST* B, int n1, int n2) {
     // TODO: Write your logic here
-    BST* ancestor, *trav;
-    int finalAncestor;
-    int ancestor1[10];
-    int ancestor2[10];
-    int ancestor1Count = 0; //serves as count
-    int ancestor2Count = 0; //serves as count
-    //for n1
-    for (trav = B; trav != NULL && trav->elem != n1; ancestor1Count++){
-        ancestor1[ancestor1Count] = trav->elem;
-        trav = (trav->elem > n1)? trav->LC : trav->RC;
+    
+    if (B == NULL){
+        return B;
     }
-
-    //for n2
-    for (trav = B; trav != NULL && trav->elem != n1; ancestor2Count++){
-        ancestor2[ancestor2Count] = trav->elem;
-        trav = (trav->elem > n1)? trav->LC : trav->RC;
-    }
-
-    //compare and find where the similar iz
-    int i, j, found = 0;   
-    int sumOfCount = ancestor1Count + ancestor2Count;
-
-    for (i = 0; i < sumOfCount && found == 0; i++){
-        for (j = i; j < sumOfCount && found == 0; j++){
-            if (ancestor1[i] == ancestor2[j]){
-                found = 1;
-                finalAncestor = ancestor1[i];
-            }
+    BST* trav;
+    for (trav = B; trav != NULL;){
+        if (n1 < trav->elem && n2 < trav->elem){
+            trav = trav->LC;
+        } else if (n1 > trav->elem && n2 > trav->elem){
+            trav = trav->RC;
+        } else {
+            return trav;
         }
+
+
     }
 
-    for (trav = B; trav != NULL && trav->elem != finalAncestor;){
-        trav = (trav->elem > n1)? trav->LC : trav->RC;
-    }
-
-    if (trav != NULL){
-        ancestor = trav;
-    }
-
-    return ancestor; // Placeholder
+    return NULL;
+    
 }
 
 // Problem 4: Check if Valid BST
@@ -339,35 +283,67 @@ bool isValidHelper (BST* B, int* prev){
 bool isValidBST(BST* B) {
     // TODO: Write your logic here
 
-    if (B == NULL){
-        return true;
+    Stack s;
+    initialize(&s);
+    BST* temp = B;
+    BST* prev = NULL;
+    while (temp != NULL || !isEmpty(s)){
+        while (temp != NULL){
+            push(&s, temp);
+            temp = temp->LC;
+        }
+
+        temp = pop(&s);
+        if (prev != NULL && temp->elem <= prev->elem){
+            return false;
+        }
+
+        prev = temp;
+        temp = temp->RC;
+        
     }
 
-    int prev = -1;
+
+    
+
+    return true;
 
 
-
-
-    return isValidHelper(B, &prev); // Placeholder
 }
 
 // Problem 5: Destroy Tree
 // Frees ALL memory and sets the root pointer to NULL.
 void destroyTree(BST** B) {
     // TODO: Write your logic here
-    if (*B == NULL){
-        return;
+   Stack s1;
+   Stack s2;
+
+   initialize(&s1);
+   initialize(&s2);
+
+   push(&s1, *B);
+
+    while (!isEmpty(s1)){
+        BST* current = pop(&s1);
+        push(&s2, current);
+
+        if (current->LC != NULL){
+            push(&s1, current->LC);
+        }
+
+        if (current->RC != NULL){
+            push(&s1, current->RC);
+        }
+    }   
+
+    while (!isEmpty(s2)){
+        BST* current = pop(&s2);
+        free(current);
+
     }
-
-    destroyTree(&(*B)->LC);
-    destroyTree(&(*B)->RC);
-
-    free(*B);
-
     *B = NULL;
+
 }
-
-
 // --- MAIN FUNCTION (TESTS) ---
 
 int main() {
